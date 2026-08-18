@@ -1,0 +1,39 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'; // React Router v6[cite: 1, 2]
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Layout & Guards
+import MainLayout from './layouts/MainLayout';
+import ProtectedRoute from './router/ProtectedRoute';
+
+// Pages
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Products from './pages/Products';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} /> {/* Toast alerts[cite: 1, 2] */}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        
+        {/* Protected Routes Wrapper */}
+        <Route element={<MainLayout />}>
+          {/* Accessible to all logged-in users */}
+          <Route element={<ProtectedRoute allowedRoles={['Admin', 'Sales', 'Purchase', 'Inventory']} />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Route>
+
+          {/* Role-Specific Routes[cite: 1, 2] */}
+          <Route element={<ProtectedRoute allowedRoles={['Admin', 'Inventory']} />}>
+            <Route path="/products" element={<Products />} />
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
